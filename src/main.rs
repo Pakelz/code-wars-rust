@@ -77,9 +77,23 @@ mod test {
         result
     }
 
+    fn increment_string_best_practice(s: &str) -> String {
+        if let Some(last) = s.chars().last() {
+            match last.to_digit(10) {
+                Some(9) => format!("{}0", &increment_string_best_practice(&s[..s.len()-1])),
+                Some(num) => format!("{}{}", &s[..s.len()-1], num + 1),
+                None => format!("{s}1")
+            } 
+        } else {
+            format!("1")
+        }
+    }
+
     #[test]
     fn test_increment_string() {
         let result = increment_string("99999999");
+        let result2 = increment_string_best_practice("asdasd223123flls01");
         println!("{result}");
+        println!("{result2}");
     }
 }
