@@ -63,7 +63,6 @@ mod test {
                         let value = char.to_digit(10).unwrap() + 1;
                         let rev: String = value.to_string().chars().rev().collect();
                         result.push_str(&rev);
-                        println!("{new_digit}");
                     } else {
                         result.push(char);
                     }
