@@ -12,7 +12,7 @@ mod test {
         let mut count = 0;
         let mut check = true;
         let mut new_digit = 0;
- 
+
         if let Some(last) = s.chars().last() {
             if !last.is_ascii_digit() {
                 return format!("{s}1");
@@ -79,10 +79,10 @@ mod test {
     fn increment_string_best_practice(s: &str) -> String {
         if let Some(last) = s.chars().last() {
             match last.to_digit(10) {
-                Some(9) => format!("{}0", &increment_string_best_practice(&s[..s.len()-1])),
-                Some(num) => format!("{}{}", &s[..s.len()-1], num + 1),
-                None => format!("{s}1")
-            } 
+                Some(9) => format!("{}0", &increment_string_best_practice(&s[..s.len() - 1])),
+                Some(num) => format!("{}{}", &s[..s.len() - 1], num + 1),
+                None => format!("{s}1"),
+            }
         } else {
             format!("1")
         }
@@ -95,4 +95,50 @@ mod test {
         println!("{result}");
         println!("{result2}");
     }
+
+    fn make_looper(string: &str) -> impl FnMut() -> char + '_ {
+        let mut counter = 0;
+        move || {
+            let mut iter = string.chars();
+            let result;
+            if counter <= string.len() - 1 {
+                result = iter.nth(counter).unwrap();
+                counter += 1;
+            } else {
+                counter = 0;
+                result = iter.nth(counter).unwrap();
+                counter += 1;
+            }
+            result
+        }
+    }
+
+    fn best_practice_make_looper(string: &str) -> impl FnMut() -> char + '_ {
+        let mut it = string.chars().cycle();
+        move || it.next().unwrap()
+    }
+
+    #[test]
+    fn test_make_looper() {
+        let mut abc = make_looper("abc");
+        assert_eq!(abc(), 'a');
+        assert_eq!(abc(), 'b');
+        assert_eq!(abc(), 'c');
+        assert_eq!(abc(), 'a');
+        assert_eq!(abc(), 'b');
+        assert_eq!(abc(), 'c');
+    }
+
+    #[test]
+    fn test_bp_make_looper() {
+        let mut abc = best_practice_make_looper("abc");
+        assert_eq!(abc(), 'a');
+        assert_eq!(abc(), 'b');
+        assert_eq!(abc(), 'c');
+        assert_eq!(abc(), 'a');
+        assert_eq!(abc(), 'b');
+        assert_eq!(abc(), 'c');
+    }
+
+    // https://www.codewars.com/kata/5511b2f550906349a70004e1/train/rust
 }
