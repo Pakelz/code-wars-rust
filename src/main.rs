@@ -141,4 +141,74 @@ mod test {
     }
 
     // https://www.codewars.com/kata/5511b2f550906349a70004e1/train/rust
+    // Last Digit
+    fn last_digit(str1: &str, str2: &str) -> i32 {
+        let left = str1.chars().last().unwrap().to_digit(10).unwrap() as i32;
+        let check = str2.chars().rev().skip_while(|&c| c == '0').next();
+        let mut right: u32;
+        if let Some(x) = check {
+            if str2.chars().last().unwrap() == '0' {
+                right = x.to_digit(10).unwrap() * 10;
+            } else {
+                let new_right = str2
+                    .chars()
+                    .rev()
+                    .take(2)
+                    .collect::<String>()
+                    .chars()
+                    .rev()
+                    .collect::<String>()
+                    .parse::<u32>()
+                    .unwrap();
+                right = new_right;
+            }
+        } else {
+            return 1;
+        }
+
+        match left {
+            2 | 3 | 7 | 8 => {
+                right %= 4;
+                if right == 0 {
+                    right = 4;
+                }
+                left.pow(right) % 10
+            }
+            _ => {
+                right %= 10;
+                println!("{right}");
+                if right == 0 {
+                    right = 2;
+                }
+                left.pow(right) % 10
+            }
+        }
+    }
+
+    fn bp_last_digit(str1: &str, str2: &str) -> i32 {
+        if str2 == "0" {
+            return 1;
+        }
+        let x = str1.chars().last().unwrap().to_digit(10).unwrap();
+        let m = str2
+            .chars()
+            .fold(0, |a, x| (a * 10 + x.to_digit(10).unwrap()) % 4);
+        let exp = if m == 0 { 4 } else { m };
+        (x.pow(exp) % 10) as i32
+    }
+
+    #[test]
+    fn test_last_digit() {
+        let result = last_digit("4", "7");
+        assert_eq!(result, 4);
+        assert_eq!(last_digit("1606938044258990275541962092341162602522202993782792835301376", "2037035976334486086268445688409378161051468393665936250636140449354381299763336706183397376"), 6);
+        assert_eq!(
+            last_digit(
+                "3715290469715693021198967285016729344580685479654510946723",
+                "68819615221552997273737174557165657483427362207517952651"
+            ),
+            7
+        );
+        assert_eq!(bp_last_digit("3715290469715693021198967285016729344580685479654510946723", "68819615221552997273737174557165657483427362207517952651"), 7);
+    }
 }
